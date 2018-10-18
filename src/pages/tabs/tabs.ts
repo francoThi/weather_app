@@ -10,8 +10,8 @@ import { GraphsPage } from '../graphs/graphs';
 export class TabsPage {
 
   tab1Root = FoldersPage;
-  tab2Root = SettingsPage;
-  tab3Root = GraphsPage;
+  tab2Root = GraphsPage;
+  tab3Root = SettingsPage;
 
   constructor() {
 

@@ -2,5 +2,14 @@
     "TITLE_APP": "Weather application",
     "FOLDERS_PAGE": "Folders",
     "GRAPHS_PAGE": "Graphics",
-    "SETTINGS_PAGE": "Settings"
+    "SETTINGS_PAGE": "Settings",
+    "SETTINGS_LANGAGES": "Language :",
+    "SETTINGS_LANGAGE_FR": "Frensh",
+    "SETTINGS_LANGAGE_EN": "English",
+    "SETTINGS_COLORS": "Color :",
+    "SETTINGS_COLOR_BLK": "Black",
+    "SETTINGS_COLOR_WHT": "White",
+    "SETTINGS_COLOR_GRY": "Grey",
+    "SETTINGS_COLOR_DKB": "Dark blue",
+    "BUTTON_VALIDATION": "Validate"
 }

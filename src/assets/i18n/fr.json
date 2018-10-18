@@ -2,5 +2,14 @@
     "TITLE_APP": "Application météo",
     "FOLDERS_PAGE": "Dossiers",
     "GRAPHS_PAGE": "Graphiques",
-    "SETTINGS_PAGE": "Paramètres"
+    "SETTINGS_PAGE": "Paramètres",
+    "SETTINGS_LANGAGES": "Langage :",
+    "SETTINGS_LANGAGE_FR": "Français",
+    "SETTINGS_LANGAGE_EN": "Anglais",
+    "SETTINGS_COLORS": "Couleur :",
+    "SETTINGS_COLOR_BLK": "Noir",
+    "SETTINGS_COLOR_WHT": "Blanc",
+    "SETTINGS_COLOR_GRY": "Gris",
+    "SETTINGS_COLOR_DKB": "Bleu foncé",
+    "BUTTON_VALIDATION": "Valider"
 }
