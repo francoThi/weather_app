@@ -1,9 +1,3 @@
-<!--
-  Generated template for the SettingsPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
 
   <ion-navbar>
@@ -13,29 +7,27 @@
 </ion-header>
 
 
-<ion-content padding>
-  <ion-item>
-    <ion-label>{{ 'SETTINGS_LANGAGES' | translate }}</ion-label>
-    <ion-select [(ngModel)]="langages">
-      <ion-option value="fr">{{ 'SETTINGS_LANGAGE_FR' | translate }}</ion-option>
-      <ion-option value="en">{{ 'SETTINGS_LANGAGE_EN' | translate }}</ion-option>
-    </ion-select>
-  </ion-item>
-  <br>
-  <ion-item>
-    <ion-label>{{ 'SETTINGS_COLORS' | translate }}</ion-label>
-    <ion-select [(ngModel)]="colors">
-      <ion-option value="black">{{ 'SETTINGS_COLOR_BLK' | translate }}</ion-option>
-      <ion-option value="white">{{ 'SETTINGS_COLOR_WHT' | translate }}</ion-option>
-      <!-- <ion-option value="grey">{{ 'SETTINGS_COLOR_GRY' | translate }}</ion-option> -->
-      <ion-option value="darkblue">{{ 'SETTINGS_COLOR_DKB' | translate }}</ion-option>
-    </ion-select>
-  </ion-item>
+<ion-content padding [class]="colorClassName">
+  <form (ngSubmit)="settingsForm()">
+    <ion-item>
+      <ion-label>{{ 'SETTINGS_LANGAGES' | translate }}</ion-label>
+      <ion-select [(ngModel)]="settings.language" name="language">
+        <ion-option value="fr">{{ 'SETTINGS_LANGAGE_FR' | translate }}</ion-option>
+        <ion-option value="en">{{ 'SETTINGS_LANGAGE_EN' | translate }}</ion-option>
+      </ion-select>
+    </ion-item>
+    <br>
+    <ion-item>
+      <ion-label>{{ 'SETTINGS_COLORS' | translate }}</ion-label>
+      <ion-select [(ngModel)]="settings.color" name="color">
+        <ion-option value="black">{{ 'SETTINGS_COLOR_BLK' | translate }}</ion-option>
+        <ion-option value="white">{{ 'SETTINGS_COLOR_WHT' | translate }}</ion-option>
+        <ion-option value="grey">{{ 'SETTINGS_COLOR_GRY' | translate }}</ion-option>
+      </ion-select>
+    </ion-item>
 
-  <ion-footer>
-    <div text-center style="margin-bottom: 30px">
-      <button ion-button round class="p-button"> {{ 'BUTTON_VALIDATION' | translate }}</button>
+    <div text-center style="margin-top: 50px">
+      <button ion-button round class="p-button" type="submit"> {{ 'BUTTON_VALIDATION' | translate }}</button>
     </div>
-  </ion-footer>
-
+  </form>
 </ion-content>

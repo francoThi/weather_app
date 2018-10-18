@@ -11,9 +11,11 @@ $colors: (
   primary:    #6495ed, // 488aff par default
   secondary:  #102753, // 32db64 par default
   danger:     #f53d3d,
+  pdanger:    #ff2a2a,
+  plight:     #c5c5c5,
   light:      white,
-  dark:       #222,
-  lightDark:  #c5c5c5
+  pwarn:      #663434,
+  dark:       rgb(71, 71, 71)
 );
 
 
@@ -23,9 +25,6 @@ $tabs-md-background: color($colors, secondary);
 
 $tabs-md-tab-color-inactive: color($colors, primary);
 $tabs-md-tab-color-active: color($colors, light);
-
-$list-md-text-color: color($colors, light);
-
 
 
 // App iOS Variables

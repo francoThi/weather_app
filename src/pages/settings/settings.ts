@@ -1,13 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
-/**
- * Generated class for the SettingsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
 @IonicPage()
 @Component({
   selector: 'page-settings',
@@ -15,7 +8,30 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class SettingsPage {
 
+  public colorClassName: string = '';
+
+  public settings: any = {
+    'language': '',
+    'color': ''
+  };
+
   constructor(public navCtrl: NavController, public navParams: NavParams) {
+
+  }
+
+  settingsForm() {
+    if (this.settings.language != null && this.settings.language != "") {
+      localStorage.setItem('language', this.settings.language);
+    } else {
+      localStorage.removeItem('language');
+    }
+    
+    if (this.settings.color != null && this.settings.color != "") {
+      localStorage.setItem('color', this.settings.color);
+      this.colorClassName = 'color-template-' + this.settings.color;
+    } else {
+      localStorage.removeItem('color');
+    }
   }
 
   ionViewDidLoad() {
