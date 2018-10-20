@@ -2,25 +2,34 @@
     border-radius: 10px;
 }
 
-// COLOR WHITE ------------------------------------
-.color-template-white {
-    background-color: color($colors, light);
-}
 // COLOR GREY ------------------------------------
-.color-template-grey {
+.color-template-grey,
+.color-template-grey input,
+.color-template-grey ion-item {
     background-color: color($colors, plight);
+}
+
+.color-template-grey ion-label,
+.color-template-grey ion-select {
+    color: black !important;
+}
+.color-template-grey .item-inner {
+    border-bottom: 1px solid black;
 }
 // -----------------------------------------------
 // COLOR BLACK ------------------------------------
-.color-template-black {
+.color-template-black,
+.color-template-black input,
+.color-template-black ion-item {
     background-color: color($colors, dark);
 }
-// -----------------------------------------------
-
-.color-template-grey .item-inner {
-    border: none !important;
+.color-template-black ion-label,
+.color-template-black ion-select {
+    color: white !important;
 }
-.color-template-black .item-inner {
-    border: none !important;
+// -----------------------------------------------
+// COLOR WHITE ------------------------------------
+.color-template-white {
+    background-color: color($colors, light);
 }
 

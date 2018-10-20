@@ -8,12 +8,15 @@ import { SettingsPage } from '../pages/settings/settings';
 import { GraphsPage } from '../pages/graphs/graphs';
 import { TabsPage } from '../pages/tabs/tabs';
 
+import { GlobalVars } from '../services/settings.service';
+
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { AndroidPermissions } from '@ionic-native/android-permissions';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -50,6 +53,8 @@ export function createTranslateLoader(http: HttpClient) {
   providers: [
     StatusBar,
     SplashScreen,
+    GlobalVars,
+    AndroidPermissions,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

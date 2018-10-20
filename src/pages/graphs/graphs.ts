@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { GlobalVars } from '../../services/settings.service'
 
 /**
  * Generated class for the GraphsPage page.
@@ -15,7 +16,15 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class GraphsPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  public colorClassName: string;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public globalVars: GlobalVars) {
+  }
+
+  ionViewWillEnter() {
+    if (this.colorClassName != this.globalVars.getColorValue()) {
+      this.colorClassName = this.globalVars.getColorValue();
+    }
   }
 
   ionViewDidLoad() {
