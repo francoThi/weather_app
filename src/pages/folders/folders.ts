@@ -58,7 +58,6 @@ export class FoldersPage {
 
   public uploadFile() {
     const url = this.selectedFile;
-    const file_name = url.substr(url.lastIndexOf('/') + 1)
     this.filePath.resolveNativePath(url)
       .then(file_path => {
         const file_name = file_path.substr(file_path.lastIndexOf('/') + 1)
