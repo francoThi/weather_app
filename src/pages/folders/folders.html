@@ -8,25 +8,26 @@
 
 <ion-content padding [class]="colorClassName">
   <ion-item>
-    <div>
+    <div (click)="listDataDir()">
       <ion-icon name="ios-folder-open-outline"></ion-icon>
-      <span> &nbsp;&nbsp;Downloads</span>
+      <span> &nbsp;&nbsp;Fichiers téléchargés</span>
     </div>
+    <ion-item *ngFor="let dir of listDir;">
+      <span>{{ dir.name }}</span>
+    </ion-item>
   </ion-item>
   <br />
-  <ion-item>
-    <div>
-      <ion-icon name="ios-folder-open-outline"></ion-icon>
-      <span> &nbsp;&nbsp;Documents</span>
-    </div>
-  </ion-item>
-
-  <div class="fileUpload" style="margin-top: 50px">
-    <span>Télécharger un fichier</span>
-    <input type="file" [(ngModel)]="selectedFile" class="upload" />
-  </div>
-  <ion-item>
-    <span>{{ selectedFile }}</span>
-  </ion-item>
+  <form>
+    <!-- <div class="fileUpload" style="margin-top: 50px">
+      <span>Télécharger un fichier</span>
+      <input type="file" (ngClick)="getUri()" class="upload" name=file />
+    </div> -->
+    <button ion-button (click)="getUri()" block>Choose file</button>
+    <br>
+    <button ion-button type="submit"  (click)="uploadFile()" block>Enregistrer</button>
+  </form>
+    <ion-item>
+      <span>{{ selectedFile }}</span>
+    </ion-item>
 
 </ion-content>

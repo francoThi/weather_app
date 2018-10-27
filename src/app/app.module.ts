@@ -18,6 +18,12 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 
+import { FileTransfer } from '@ionic-native/file-transfer';
+import { FilePath } from '@ionic-native/file-path';
+import { FileOpener } from '@ionic-native/file-opener'
+import { FileChooser } from '@ionic-native/file-chooser';
+import { File } from '@ionic-native/file';
+
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -55,6 +61,11 @@ export function createTranslateLoader(http: HttpClient) {
     SplashScreen,
     GlobalVars,
     AndroidPermissions,
+    FileOpener,
+    FileTransfer,
+    FilePath,
+    FileChooser,
+    File,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
