@@ -12,8 +12,8 @@
       <ion-icon name="ios-folder-open-outline"></ion-icon>
       <span> &nbsp;&nbsp;Fichiers téléchargés</span>
     </div>
-    <ion-item *ngFor="let dir of listDir;">
-      <span>{{ dir.name }}</span>
+    <ion-item *ngFor="let file of listDir;">
+      <span>{{ file.name }}</span><span><button ion-button (click)="removeFile(file.name)">Remove</button></span>
     </ion-item>
   </ion-item>
   <br />

@@ -60,28 +60,39 @@ export class FoldersPage {
     const url = this.selectedFile;
     this.filePath.resolveNativePath(url)
       .then(file_path => {
-        const file_name = file_path.substr(file_path.lastIndexOf('/') + 1)
-        const abs_file_path = file_path.substring(0, file_path.length-file_name.length)
-          this.file.copyFile(abs_file_path, file_name, this.file.dataDirectory, file_name)
-          .then(_ => this.presentToast('Copied to: ' + this.file.dataDirectory))
-          .catch(err => this.presentToast('Not copy: ' + err.message));
+        const file_name = file_path.substr(file_path.lastIndexOf('/') + 1);
+        this.removeFile(file_name);
+        const abs_file_path = file_path.substring(0, file_path.length-file_name.length);
+        this.file.copyFile(abs_file_path, file_name, this.file.dataDirectory+'Documents/', file_name)
+        .then(_ =>{ 
+          this.presentToast('Copied to: ' + this.file.dataDirectory+'Documents/')
+          this.navCtrl.setRoot(this.navCtrl.getActive().component);
+        })
+        .catch(err => this.presentToast('Not copy: ' + err.message));
       })
-      .catch(err => this.presentToast(err.message));
+      .catch(err => this.presentToast('File path error: ' + err.message));
 
   }
 
   listDataDir(){
-    this.file.listDir(this.file.dataDirectory, '').then(res => {
-      for (let i = 0; i < res.length; i++) {
-        this.file.checkDir(this.file.dataDirectory, res[i].name)
-          .then(bool => {
-            if(bool == true)
-              res.splice(i,1)
-            })
-        }
-        this.listDir = res   
+    this.file.listDir(this.file.dataDirectory+'Documents/', '')
+    .then(res => {
+        this.listDir = res;
       })
-    .catch(err => this.presentToast(err.message))
+    .catch(err => this.presentToast('List dir err: ' + err.message))
+  }
+
+  removeFile(fileName: string){
+    this.file.checkFile(this.file.dataDirectory+'Documents/', fileName)
+      .then(bool => {
+        if(bool == true)
+          this.file.removeFile(this.file.dataDirectory+'Documents/', fileName)
+          .then(_ => { 
+            this.presentToast('File removed')
+          }) 
+          .catch(err => console.log('Remove file err: ' + err.message))    
+        })
+      .catch(err => this.presentToast('Check File err: ' + err.message))
   }
 
   ionViewDidLoad() {
