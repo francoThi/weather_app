@@ -1,33 +1,45 @@
 <ion-header>
-
   <ion-navbar>
     <ion-title>{{ 'FOLDERS_PAGE' | translate }}</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 <ion-content padding [class]="colorClassName">
+
   <ion-item>
+    <div>
+      <ion-icon name="ios-folder-open-outline"></ion-icon>
+      <span>&nbsp;&nbsp;Télécharger un fichier</span>
+    </div>
+  </ion-item>
+
+  <form style="margin-top: 25px">
+    <button ion-button (click)="getUri()" block>Choisir un fichier</button><br />
+    <button ion-button type="submit" (click)="uploadFile()" block>Enregistrer</button>
+  </form>
+
+  <ion-item style="margin-top: 40px;">
     <div (click)="listDataDir()">
       <ion-icon name="ios-folder-open-outline"></ion-icon>
-      <span> &nbsp;&nbsp;Fichiers téléchargés</span>
+      <span>&nbsp;&nbsp;Mes documents</span>
+      <ion-icon style="float: right;" name="ios-refresh"></ion-icon>
     </div>
-    <ion-item *ngFor="let file of listDir;">
-      <span>{{ file.name }}</span><span><button ion-button (click)="removeFile(file.name)">Remove</button></span>
-    </ion-item>
   </ion-item>
-  <br />
-  <form>
-    <!-- <div class="fileUpload" style="margin-top: 50px">
-      <span>Télécharger un fichier</span>
-      <input type="file" (ngClick)="getUri()" class="upload" name=file />
-    </div> -->
-    <button ion-button (click)="getUri()" block>Choose file</button>
-    <br>
-    <button ion-button type="submit"  (click)="uploadFile()" block>Enregistrer</button>
-  </form>
-    <ion-item>
-      <span>{{ selectedFile }}</span>
+
+  <div *ngIf="showFiles">
+    <ion-searchbar [(ngModel)]="searchFile" [showCancelButton]="shouldShowCancel" (search)="searchFiles($event)"
+      (ionCancel)="onCancel($event)">
+    </ion-searchbar>
+    <ion-item style="margin-top: 25px" *ngFor="let file of listFiles">
+      <span (click)="getContentFile()">{{ file }}</span>
+      <span>
+        <button style="float: right" ion-button (click)="removeFile(file)">Supprimer</button>
+      </span>
     </ion-item>
+  </div>
+
+  <div>
+    <!-- {{ fileToParse }} -->
+  </div>
 
 </ion-content>
