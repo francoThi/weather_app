@@ -63,63 +63,78 @@ export class FoldersPage {
 	public getContentFile(fileName: string) {
 		console.log(this.file.dataDirectory + "Documents/", fileName)
 		try {
-			this.file.readAsBinaryString(this.file.dataDirectory + "Documents/", fileName).then( async (data) => {
+			this.file.readAsBinaryString(this.file.dataDirectory + "Documents/", fileName).then(async (data) => {
 				console.log('START PARSING: ')
-				let file = data.replace(/\t/g, ",");
-				file = file.replace(/,( ,)/g, ", NULL,");
-				file = file.replace(/,( ,)/g, ", NULL,");
-				file = file.replace(/,,/g, ", NULL,");
-				file = file.replace(/\n/g, ";");
-				let lines = file.split(";")
-				console.log(lines[1])
-				let arrayColumns = lines[1].split(',')
 
-				let columns = 'fileName VARCHAR(255), '
+				// Découpage des données du fichier
+				let data_tmp = data.split('\n')
+				// --------------------------------
 
-				let posDate: number
-				let posLightningRfNoise: number
-				let posPresentWeather: number
-				for (let l: number = 0; l < arrayColumns.length; l++) {
-					if (arrayColumns[l] == 'CREATEDATE') {
-						columns += (arrayColumns[l] + ' DATE, ')
-						posDate = l
-					} else if (arrayColumns[l] == 'LIGHTNING_RF_NOISE'){
-						columns += (arrayColumns[l] + ' VARCHAR(255), ')
-						posLightningRfNoise = l
-					} else if (arrayColumns[l] == 'PRESENT_WEATHER') {
-						columns += (arrayColumns[l] + ' VARCHAR(255), ')
-						posPresentWeather = l
-					} else {
-						columns += (arrayColumns[l] + ' INT, ')
-					}
+				// Découpage et mise en forme des colonnes
+				let arrayColumns = data_tmp[1].split('\t')
+				let columns = ["FILENAME"]
+				arrayColumns.forEach(column => {
+					columns.push(column.replace(/\s/g, ''))
+				});
+				// ---------------------------------------
+
+				// Découpage et mise en forme de chaque ligne
+				let arrayLines = []
+				for (let n = 2; n < data_tmp.length - 1; n++) {
+					let values = data_tmp[n].split('\t');
+					let line = [];
+					line.push('"'+fileName+'"')
+					values.forEach(value => {
+						value = value.replace(/\s{1,}/g, '')
+						if (value == '' || value.length < 0) {
+							value = 'NULL'
+						}
+						line.push('"'+value+'"')
+					});
+					arrayLines.push(line)
 				}
-				columns = columns.substring(0, columns.length - 2)
-				console.log('Colonnes: ', columns)
+				// -------------------------------------------
+				
+				// Vérification du nombre de valeurs par lignes
+				console.log('Nombre de colonnes du fichier: ', columns.length)
+				let tabIsOk = true
+				arrayLines.forEach(lines => {
+					if (lines.length != columns.length) {
+						tabIsOk = false
+						console.log("ERREUR: Une ou plusieurs lignes ne correspondent pas aux nombres de colonnes attendu")
+					}
+				});
+				// -------------------------------------------
 
-				let values = ''
-				for (let l: number = 2; l < lines.length - 1; l++) {
-				// for (let l: number = 7572; l < 7595; l++) {
-					let arrayLines = lines[l].split(',')
-					let lines_tmp = ''
-					for (let n: number = 0; n < arrayLines.length; n++) {
-						if (n == posDate || n == posLightningRfNoise || n == posPresentWeather) {
-							lines_tmp += '"'+arrayLines[n]+'",'
-						} else {
-							lines_tmp += arrayLines[n] + ','
+				if (tabIsOk) {
+					console.log("Le tableau est conforme, début de l'insertion des données ...")
+					// Création de la table si elle n'existe pas 
+					let columnsAndTypes: string = ''
+					let columnsInsertData: string = ''
+					for (let n: number = 0; n < columns.length; n++) {
+						if ( n + 1 < columns.length) {
+							columnsAndTypes += columns[n] + ' VARCHAR(255), '
+							columnsInsertData += columns[n] + ', '
+						}
+						else {
+							columnsAndTypes += columns[n] + ' VARCHAR(255)'
+							columnsInsertData += columns[n]
 						}
 					}
-					lines_tmp = lines_tmp.substring(0, lines_tmp.length - 1)
-					if (lines_tmp[lines_tmp.length -3] == ',') {
-						lines_tmp = lines_tmp.substring(0, lines_tmp.length - 3)
-						lines_tmp += ', NULL'
-					}
-					values += '("'+fileName+'", '+lines_tmp+'), '
-				}
 
-				values = values.substring(0, values.length - 2)
-				// console.log('Values: ', values)
-				await this.db.createTable('meteo', columns)
-				await this.db.insertData('meteo','fileName,'+ lines[1], values)
+					await this.db.createTable("meteo", columnsAndTypes)
+					// -----------------------------------------
+					// Ajout des données en un bloc 
+					let lines: string = ''
+					for (let n: number = 0; n < arrayLines.length; n++) {
+						if ( n + 1 < arrayLines.length)
+							lines += '(' + arrayLines[n].toString() + '), '
+						else 
+						lines += '(' + arrayLines[n].toString() + ') '
+					}
+					await this.db.insertData("meteo", columnsInsertData, lines)
+					// -----------------------------------------
+				}
 			})
 		} catch (err) {
 			console.log(err)
@@ -185,22 +200,3 @@ export class FoldersPage {
 	}
 
 }
-
-// this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE).then(result => 
-//   console.log('Has permission?',result.hasPermission), err => 
-//   this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE)
-// );
-// this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.INTERNET).then(result => 
-//   console.log('Has permission?',result.hasPermission), err => 
-//   this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.INTERNET)
-// );
-// this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE).then(result => 
-//   console.log('Has permission?',result.hasPermission), err => 
-//   this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE)
-// );
-
-// this.androidPermissions.requestPermissions([
-//   this.androidPermissions.PERMISSION.INTERNET,
-//   this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE, 
-//   this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
-// ]);
