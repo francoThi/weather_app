@@ -3,11 +3,11 @@ import { IonicPageModule } from 'ionic-angular';
 import { GraphsPage } from './graphs';
 
 @NgModule({
-  declarations: [
-    GraphsPage,
-  ],
-  imports: [
-    IonicPageModule.forChild(GraphsPage),
-  ],
+	declarations: [
+		GraphsPage,
+	],
+	imports: [
+		IonicPageModule.forChild(GraphsPage),
+	],
 })
-export class GraphsPageModule {}
+export class GraphsPageModule { }

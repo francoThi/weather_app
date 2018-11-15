@@ -23,6 +23,8 @@ import { FilePath } from '@ionic-native/file-path';
 import { FileOpener } from '@ionic-native/file-opener'
 import { FileChooser } from '@ionic-native/file-chooser';
 import { File } from '@ionic-native/file';
+import { SQLite } from '@ionic-native/sqlite';
+import { Db } from '../services/database.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -66,6 +68,8 @@ export function createTranslateLoader(http: HttpClient) {
     FilePath,
     FileChooser,
     File,
+    SQLite,
+    Db,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

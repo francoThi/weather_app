@@ -1,45 +1,45 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>{{ 'FOLDERS_PAGE' | translate }}</ion-title>
-  </ion-navbar>
+	<ion-navbar>
+		<ion-title>{{ 'FOLDERS_PAGE' | translate }}</ion-title>
+	</ion-navbar>
 </ion-header>
 
 <ion-content padding [class]="colorClassName">
 
-  <ion-item>
-    <div>
-      <ion-icon name="ios-folder-open-outline"></ion-icon>
-      <span>&nbsp;&nbsp;Télécharger un fichier</span>
-    </div>
-  </ion-item>
+	<ion-item>
+		<div>
+			<ion-icon name="ios-folder-open-outline"></ion-icon>
+			<span>&nbsp;&nbsp;Télécharger un fichier</span>
+		</div>
+	</ion-item>
 
-  <form style="margin-top: 25px">
-    <button ion-button (click)="getUri()" block>Choisir un fichier</button><br />
-    <button ion-button type="submit" (click)="uploadFile()" block>Enregistrer</button>
-  </form>
+	<form style="margin-top: 25px">
+		<button ion-button (click)="getUri()" block>Choisir un fichier</button><br />
+		<button ion-button type="submit" (click)="uploadFile()" block>Enregistrer</button>
+	</form>
 
-  <ion-item style="margin-top: 40px;">
-    <div (click)="listDataDir()">
-      <ion-icon name="ios-folder-open-outline"></ion-icon>
-      <span>&nbsp;&nbsp;Mes documents</span>
-      <ion-icon style="float: right;" name="ios-refresh"></ion-icon>
-    </div>
-  </ion-item>
+	<ion-item style="margin-top: 40px;">
+		<div (click)="listDataDir()">
+			<ion-icon name="ios-folder-open-outline"></ion-icon>
+			<span>&nbsp;&nbsp;Mes documents</span>
+			<ion-icon style="float: right;" name="ios-refresh"></ion-icon>
+		</div>
+	</ion-item>
 
-  <div *ngIf="showFiles">
-    <ion-searchbar [(ngModel)]="searchFile" [showCancelButton]="shouldShowCancel" (search)="searchFiles($event)"
-      (ionCancel)="onCancel($event)">
-    </ion-searchbar>
-    <ion-item style="margin-top: 25px" *ngFor="let file of listFiles">
-      <span (click)="getContentFile()">{{ file }}</span>
-      <span>
-        <button style="float: right" ion-button (click)="removeFile(file)">Supprimer</button>
-      </span>
-    </ion-item>
-  </div>
+	<div *ngIf="showFiles">
+		<ion-searchbar [(ngModel)]="searchFile" [showCancelButton]="shouldShowCancel" (search)="searchFiles($event)"
+		 (ionCancel)="onCancel($event)">
+		</ion-searchbar>
+		<ion-item style="margin-top: 25px" *ngFor="let file of listFiles">
+			<span (click)="getContentFile(file)">{{ file }}</span>
+			<span>
+				<button style="float: right" ion-button (click)="removeFile(file)">Supprimer</button>
+			</span>
+		</ion-item>
+	</div>
 
-  <div>
-    <!-- {{ fileToParse }} -->
-  </div>
+	<div>
+		<!-- {{ fileToParse }} -->
+	</div>
 
 </ion-content>

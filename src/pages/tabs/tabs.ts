@@ -5,15 +5,15 @@ import { SettingsPage } from '../settings/settings';
 import { GraphsPage } from '../graphs/graphs';
 
 @Component({
-  templateUrl: 'tabs.html'
+	templateUrl: 'tabs.html'
 })
 export class TabsPage {
 
-  tab1Root = FoldersPage;
-  tab2Root = GraphsPage;
-  tab3Root = SettingsPage;
+	tab1Root = FoldersPage;
+	tab2Root = GraphsPage;
+	tab3Root = SettingsPage;
 
-  constructor() {
+	constructor() {
 
-  }
+	}
 }

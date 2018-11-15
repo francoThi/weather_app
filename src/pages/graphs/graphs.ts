@@ -11,24 +11,24 @@ import { GlobalVars } from '../../services/settings.service'
 
 @IonicPage()
 @Component({
-  selector: 'page-graphs',
-  templateUrl: 'graphs.html',
+	selector: 'page-graphs',
+	templateUrl: 'graphs.html',
 })
 export class GraphsPage {
 
-  public colorClassName: string;
+	public colorClassName: string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public globalVars: GlobalVars) {
-  }
+	constructor(public navCtrl: NavController, public navParams: NavParams, public globalVars: GlobalVars) {
+	}
 
-  ionViewWillEnter() {
-    if (this.colorClassName != this.globalVars.getColorValue()) {
-      this.colorClassName = this.globalVars.getColorValue();
-    }
-  }
+	ionViewWillEnter() {
+		if (this.colorClassName != this.globalVars.getColorValue()) {
+			this.colorClassName = this.globalVars.getColorValue();
+		}
+	}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad GraphsPage');
-  }
+	ionViewDidLoad() {
+		console.log('ionViewDidLoad GraphsPage');
+	}
 
 }
