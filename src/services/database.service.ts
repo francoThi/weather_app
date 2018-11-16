@@ -65,10 +65,27 @@ export class Db {
 		})
 	}
 
-	public insertData(tableName: string, columns: string, values: string) {
-		return new Promise<any>(async (resolve, reject) => {
+	public findDataParse(tableName: string, values: string) {
+		return new Promise<boolean>(async (resolve, reject) => {
 			if (this.db != null) {
-				console.log(tableName)
+				console.log('SELECT * FROM '+tableName+' WHERE FILENAME = "'+ values+'" LIMIT 1')
+				this.db.executeSql('SELECT * FROM '+tableName+' WHERE FILENAME = "'+ values+'" LIMIT 1', [])
+				.then((res) => {
+					res.rows.length > 0 ? resolve(true):resolve(false);
+				})
+				.catch(err => {
+					console.log('ERREUR SELECT FIND TABLE ', JSON.stringify(err))
+					reject(false)
+				})
+			} else {
+				reject(false)
+			}
+		})
+	}
+
+	public insertData(tableName: string, columns: string, values: string) {
+		return new Promise<string>(async (resolve, reject) => {
+			if (this.db != null) {
 				console.log('INSERT INTO (' + columns + ') VALUES '+ values)
 				this.db.executeSql('INSERT INTO ' + tableName + ' (' + columns + ') VALUES '+ values, [])
 					.then(() => {

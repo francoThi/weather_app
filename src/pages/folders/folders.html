@@ -34,7 +34,7 @@
 		</div>
 	</ion-item>
 
-	<div *ngIf="showFiles">
+	<div *ngIf="showFiles && !isParsing">
 		<ion-searchbar [(ngModel)]="searchFile" [showCancelButton]="shouldShowCancel" (search)="searchFiles($event)"
 		 (ionCancel)="onCancel($event)">
 		</ion-searchbar>

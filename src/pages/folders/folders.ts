@@ -66,17 +66,16 @@ export class FoldersPage {
 		}).catch(e => this.presentToast('uri: ' + JSON.stringify(e)));
 	}
 
-	public getContentFile(fileName: string) {
+	public async getContentFile(fileName: string) {
 		console.log(this.file.dataDirectory + "Documents/", fileName)
 		try {
 			this.progressBar = 0
 			this.isParsing = true
+			console.log('START PARSING: ')
 			this.file.readAsBinaryString(this.file.dataDirectory + "Documents/", fileName).then(async (data) => {
-				console.log('START PARSING: ')
 
 				// Découpage des données du fichier en ligne
 				let data_tmp = data.split('\n')
-				this.progressBar = 5
 				// -----------------------------------------
 
 				// Découpage et mise en forme des colonnes
@@ -85,7 +84,6 @@ export class FoldersPage {
 				arrayColumns.forEach(column => {
 					columns.push(column.replace(/\s/g, ''))
 				});
-				this.progressBar = 8
 				// ---------------------------------------
 
 				// Création d'un tableau de type VARCHAR par default
@@ -121,7 +119,6 @@ export class FoldersPage {
 					}
 					arrayLines.push(line)
 				}
-				this.progressBar = 30
 				// -------------------------------------------
 
 				// Vérification du nombre de valeurs par lignes
@@ -133,7 +130,6 @@ export class FoldersPage {
 						console.log("ERREUR: Une ou plusieurs lignes ne correspondent pas aux nombres de colonnes attendu")
 					}
 				});
-				this.progressBar = 35
 				// -------------------------------------------
 
 				if (tabIsOk) {
@@ -142,7 +138,7 @@ export class FoldersPage {
 					let columnsAndTypes: string = ''
 					let columnsInsertData: string = ''
 					for (let n: number = 0; n < columns.length; n++) {
-						if ( n + 1 < columns.length) {
+						if (n + 1 < columns.length) {
 							columnsAndTypes += columns[n] + ' VARCHAR(255), '
 							columnsInsertData += columns[n] + ', '
 						}
@@ -151,22 +147,34 @@ export class FoldersPage {
 							columnsInsertData += columns[n]
 						}
 					}
-					this.progressBar = 45
+					this.progressBar = 31
 					await this.db.createTable("meteo", columnsAndTypes)
 					// -----------------------------------------
-					// Ajout des données en un bloc 
-					let lines: string = ''
-					for (let n: number = 0; n < arrayLines.length; n++) {
-						if ( n + 1 < arrayLines.length)
-							lines += '(' + arrayLines[n].toString() + '), '
-						else 
-						lines += '(' + arrayLines[n].toString() + ') '
-					}
-					this.progressBar = 78
-					await this.db.insertData("meteo", columnsInsertData, lines)
-					this.presentToast('Fichier parsé avec succès')
-					this.isParsing = false
-					// -----------------------------------------
+
+					// On vérifie si un fichier du même nom est déjà parsé
+					this.progressBar = 49
+					let isAlreadyParse = await this.db.findDataParse('meteo', fileName)
+					console.log('DOCUMENT DEJA PARSE: ', isAlreadyParse)
+					// ---------------------------------------------------
+
+					if (!isAlreadyParse) {
+						// Ajout des données en un bloc 
+						let lines: string = ''
+						for (let n: number = 0; n < arrayLines.length; n++) {
+							if (n + 1 < arrayLines.length)
+								lines += '(' + arrayLines[n].toString() + '), '
+							else
+								lines += '(' + arrayLines[n].toString() + ') '
+						}
+						this.progressBar = 78
+						await this.db.insertData("meteo", columnsInsertData, lines)
+						this.presentToast('Fichier parsé avec succès')
+						this.isParsing = false
+						// -----------------------------------------
+					} else {
+						this.presentToast('Un fichier du même nom à déjà été parsé!')
+						this.isParsing = false
+					}	
 				} else {
 					this.isParsing = false
 				}
@@ -232,7 +240,7 @@ export class FoldersPage {
 		let db = this.db
 		let globalVars = this.globalVars
 		let translateService = this.translateService
-		setTimeout(async function(){
+		setTimeout(async function () {
 			await db.createDB()
 			let settings = await db.getData('settings', 'language, color')
 			console.log('SETTINGS: ', JSON.stringify(settings))
@@ -243,5 +251,5 @@ export class FoldersPage {
 			}
 		}, 175);
 	}
-	
+
 }
