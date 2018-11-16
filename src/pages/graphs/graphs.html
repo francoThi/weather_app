@@ -15,4 +15,43 @@
 
 <ion-content padding [class]="colorClassName">
 
+	<ion-item>
+		<ion-label>Choisir un fichier parsé</ion-label>
+		<ion-select [(ngModel)]="selectedFile" name="fileParse">
+			<ion-option *ngFor="let file of listFileParse" [value]="file.value">
+				<span>{{ file.name }}</span>
+			</ion-option>
+		</ion-select>
+	</ion-item>
+
+	<br />
+	<ion-item *ngIf="selectedFile != null && selectedFile != ''">
+		<ion-label>Choisir les données à analyser</ion-label>
+		<ion-select multiple="true" [(ngModel)]="selectedColumns" name="columns">
+			<ion-option *ngFor="let column of listColumns" [value]="column.value">
+				<span>{{ column.name }}</span>
+			</ion-option>
+		</ion-select>
+	</ion-item>
+
+	<ion-scroll scrollX="true" style="min-height: 500px">
+		<div style="min-height: 500px;min-width: 600px" *ngIf="selectedFile != null && selectedFile != '' && selectedColumns != null && selectedColumns != ''">
+			<div class="row header">
+				<div class="col">Nom de l'analyse</div>
+				<div class="col">Min</div>
+				<div class="col">Heure du min</div>
+				<div class="col">Moyenne de la journée</div>
+				<div class="col">Max</div>
+				<div class="col">Heure du max</div>
+			</div>
+			<div class="row" *ngFor="let data of selectedColumns">
+				<div class="col">data 1</div>
+				<div class="col">data 2</div>
+				<div class="col">data 3</div>
+				<div class="col">data 4</div>
+				<div class="col">data 5</div>
+				<div class="col">data 6</div>
+			</div>
+		</div>
+	</ion-scroll>
 </ion-content>
