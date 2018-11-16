@@ -46,7 +46,13 @@ export class SettingsPage {
 		if (settings.data != null) {
 			await this.db.updateData('settings', queryUpdate, ' 1 = 1')
 		} else {
-			await this.db.insertData('settings', 'language, color', '"('+this.settings.language+'", "'+this.settings.color+'")')
+			if (this.settings.language == null || this.settings.language == "") {
+				this.settings.language = 'fr'
+			}
+			if (this.settings.color == null || this.settings.color == "") {
+				this.settings.color = 'white'
+			}
+			await this.db.insertData('settings', 'language, color', '("'+this.settings.language+'", "'+this.settings.color+'")')
 		}
 		
 		this.settings.language = '';

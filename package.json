@@ -33,6 +33,7 @@
     "@ionic/storage": "2.2.0",
     "@ngx-translate/core": "^9.1.1",
     "@ngx-translate/http-loader": "^3.0.1",
+    "angular-progress-bar": "^1.0.8",
     "cordova-android": "6.3.0",
     "cordova-android-support-gradle-release": "^1.4.7",
     "cordova-plugin-android-permissions": "^1.0.0",

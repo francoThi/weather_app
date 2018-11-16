@@ -66,17 +66,24 @@ export class Db {
 	}
 
 	public insertData(tableName: string, columns: string, values: string) {
-		if (this.db != null) {
-			console.log(tableName)
-			console.log('INSERT INTO (' + columns + ') VALUES '+ values)
-			this.db.executeSql('INSERT INTO ' + tableName + ' (' + columns + ') VALUES '+ values, [])
-				.then(() => {
-					console.log('Ajout de données dans la table ' + tableName)
-				})
-				.catch(err => console.log('ERREUR INSERT INTO TABLE ', JSON.stringify(err)))
-		} else {
-			console.log('ERREUR: La base de donnée est null')
-		}
+		return new Promise<any>(async (resolve, reject) => {
+			if (this.db != null) {
+				console.log(tableName)
+				console.log('INSERT INTO (' + columns + ') VALUES '+ values)
+				this.db.executeSql('INSERT INTO ' + tableName + ' (' + columns + ') VALUES '+ values, [])
+					.then(() => {
+						console.log('Ajout de données dans la table ' + tableName)
+						resolve('ok')
+					})
+					.catch(err => {
+						console.log('ERREUR INSERT INTO TABLE ', JSON.stringify(err))
+						reject('err')
+					})
+			} else {
+				console.log('ERREUR: La base de donnée est null')
+				reject('err')
+			}
+		})
 	}
 
 	public updateData(tableName: string, values: string, condition: string) {

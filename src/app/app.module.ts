@@ -2,6 +2,7 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
+import { ProgressBarModule } from "angular-progress-bar"
 
 import { FoldersPage } from '../pages/folders/folders';
 import { SettingsPage } from '../pages/settings/settings';
@@ -48,7 +49,8 @@ export function createTranslateLoader(http: HttpClient) {
         useFactory: (createTranslateLoader),
         deps: [HttpClient]
       }
-    })
+    }),
+    ProgressBarModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -70,7 +72,7 @@ export function createTranslateLoader(http: HttpClient) {
     File,
     SQLite,
     Db,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
-export class AppModule {}
+export class AppModule { }

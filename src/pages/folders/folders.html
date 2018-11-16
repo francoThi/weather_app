@@ -5,7 +5,15 @@
 </ion-header>
 
 <ion-content padding [class]="colorClassName">
-
+	<div *ngIf="isParsing" class="dimScreen parsing">
+		<div class="parsingText">
+			<span>Parsing en cours</span>
+		</div>
+	</div>
+	<div *ngIf="isParsing" class="progressBar" style="height: 200px;">
+		<progress-bar [progress]="progressBar" [color]="'#488aff'">
+		</progress-bar>
+	</div>
 	<ion-item>
 		<div>
 			<ion-icon name="ios-folder-open-outline"></ion-icon>

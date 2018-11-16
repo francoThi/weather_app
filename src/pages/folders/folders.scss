@@ -24,4 +24,37 @@ page-folders {
         opacity: 0;
         filter: alpha(opacity=0);
     }
+    .dimScreen {
+        position:fixed;
+        padding:0;
+        margin:0;
+        top:0;
+        left:0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        opacity: 0.8;
+        background-color: grey;
+    }
+    .parsingText {
+        position:fixed;
+        padding:0;
+        margin:0;
+        top:30%;
+        width: 100%;
+        text-align: center;
+        color: white;
+        font-size: 25px;
+        font-weight: 600;
+    }
+    .progressBar {
+        position:fixed;
+        padding:0;
+        margin: auto;
+        top:45%;
+        left: 10%;
+        width: 80%;
+        text-align: center;
+        z-index: 2;
+    }
 }
