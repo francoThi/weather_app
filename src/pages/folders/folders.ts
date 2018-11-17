@@ -102,7 +102,9 @@ export class FoldersPage {
 					line.push('"' + fileName + '"')
 					for (let n: number = 0; n < values.length; n++) {
 						let regFloat = new RegExp('^[+-]?[0-9]*[.]?[0-9]+$')
-						values[n] = values[n].replace(/\s{1,}/g, '')
+						if (n != 0) {
+							values[n] = values[n].replace(/\s{1,}/, '')
+						}
 						if (values[n] == '' || values[n].length < 0) {
 							values[n] = 'NULL'
 						}
@@ -139,11 +141,11 @@ export class FoldersPage {
 					let columnsInsertData: string = ''
 					for (let n: number = 0; n < columns.length; n++) {
 						if (n + 1 < columns.length) {
-							columnsAndTypes += columns[n] + ' VARCHAR(255), '
+							columnsAndTypes += columns[n] + arrayTypes[n] + ', '
 							columnsInsertData += columns[n] + ', '
 						}
 						else {
-							columnsAndTypes += columns[n] + ' VARCHAR(255)'
+							columnsAndTypes += columns[n] + arrayTypes[n]
 							columnsInsertData += columns[n]
 						}
 					}
