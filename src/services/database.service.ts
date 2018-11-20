@@ -9,7 +9,7 @@ export class Db {
 	public db: SQLiteObject
 
 	public createDB() {
-		return new Promise<any>(async (resolve, reject) => {
+		return new Promise<object>(async (resolve, reject) => {
 			try {
 				this.sqlite.create({
 					name: 'meteo.db',
@@ -18,31 +18,32 @@ export class Db {
 					console.log('Création/Ouverture de la base avec succès')
 					this.db = db
 					await this.createTable('settings', 'language VARCHAR(255), color VARCHAR(255)')
-					// await this.dropTable('meteo')
-					resolve('ok')
+					await this.dropTable('meteo')
+					resolve({"data": 'ok', "erreur": ''})
 				})
 			} catch (err) {
 				console.log(err)
-				reject(err)
+				reject({"data": '', "erreur": 'ERREUR CREATE DB ' + JSON.stringify(err)})
 			}
 		})
 	}
 
 	public createTable(tableName: string, columns: string) {
-		return new Promise<any>(async (resolve, reject) => {
+		return new Promise<object>(async (resolve, reject) => {
 			if (this.db != null) {
 				console.log('CREATE TABLE ' + tableName + ' (' + columns + ')')
 				this.db.executeSql('CREATE TABLE IF NOT EXISTS ' + tableName + ' (' + columns + ')', [])
 					.then(() => {
 						console.log('Executed SQL: Création de la table ' + tableName)
-						resolve('ok')
+						resolve({"data": 'ok', "erreur": ''})
 					})
 					.catch(err => {
-						console.log('ERR CREATE TABLE ', JSON.stringify(err))
-						reject('erreur')
+						console.log('ERREUR CREATE TABLE ', JSON.stringify(err))
+						reject({"data": '', "erreur": 'ERREUR CREATE TABLE ' + JSON.stringify(err)})
 					})
 			} else {
-				console.log('ERROR: La base de donnée est null')
+				console.log('ERREUR: La base de donnée est null')
+				resolve({"data": '', "erreur": 'ERREUR BASE IS NULL'})
 			}
 		})
 	}
@@ -51,16 +52,19 @@ export class Db {
 		return new Promise<boolean>(async (resolve, reject) => {
 			if (this.db != null) {
 				this.db.executeSql('SELECT name FROM sqlite_master WHERE type="table" AND name="' + tableName + '"', [])
-					.then(res => {
-						resolve(res.rows.length)
+					.then((res) => {
+						if (res.rows.length > 0)
+							resolve(true)
+						else
+							resolve(false)
 					})
 					.catch(err => {
 						console.log('ERREUR CHECK IF TABLE EXISTE ', JSON.stringify(err))
-						reject(0)
+						resolve(false)
 					})
 			} else {
 				console.log('ERREUR: La base de donnée est null')
-				reject(0)
+				resolve(false)
 			}
 		})
 	}
@@ -81,7 +85,7 @@ export class Db {
 					})
 					.catch(err => {
 						console.log('ERREUR GET FILENAME: ', JSON.stringify(err))
-						reject([])
+						resolve([])
 					})
 			} else {
 				console.log('ERREUR: La base de donnée est null')
@@ -126,10 +130,18 @@ export class Db {
 				query += '(SELECT AVG('+column+') FROM meteo WHERE '+column+' != "NULL" AND '+column+' IS NOT NULL) AS moyenne,';
 				query += '(SELECT MAX('+column+') FROM meteo WHERE '+column+' != "NULL") AS max,';
 				query += '(SELECT CREATEDATE FROM meteo WHERE '+column+' = (SELECT MAX('+column+') FROM meteo WHERE '+column+' != "NULL")) AS dMax';
+
+				if (column === 'LOCAL_WS_2MIN_MNM') {
+					query += ', (SELECT MIN("LOCAL_WD_2MIN_MNM") FROM meteo WHERE "LOCAL_WD_2MIN_MNM" != "NULL") AS minWD,';
+					query += '(SELECT AVG("LOCAL_WD_2MIN_MNM") FROM meteo WHERE "LOCAL_WD_2MIN_MNM" != "NULL" AND "LOCAL_WD_2MIN_MNM" IS NOT NULL) AS moyenneWD,';
+					query += '(SELECT MAX("LOCAL_WD_2MIN_MNM") FROM meteo WHERE "LOCAL_WD_2MIN_MNM" != "NULL") AS maxWD';
+				}
+
 				console.log(query)
 				this.db.executeSql(query, [])
 					.then(res => {
 						if (res.rows.length > 0) {
+							console.log(JSON.stringify(res.rows.item(0)))
 							resolve(JSON.stringify(res.rows.item(0)))
 						} else {
 							resolve('')
@@ -147,19 +159,19 @@ export class Db {
 	}
 
 	public getData(tableName: string, columns: string) {
-		return new Promise<any>(async (resolve, reject) => {
+		return new Promise<object>(async (resolve, reject) => {
 			if (this.db != null) {
 				this.db.executeSql('SELECT ' + columns + ' FROM ' + tableName, [])
 					.then(res => {
-						resolve({ 'data': res.rows.item(0), 'erreur': '' })
+						resolve({ 'data': res.rows.item(0), "erreur": '' })
 					})
 					.catch(err => {
 						console.log('ERREUR GET COLUMNS ', JSON.stringify(err))
-						reject({ 'data': '', 'erreur': JSON.stringify(err) })
+						reject({ 'data': '', "erreur": 'ERREUR GET COLUMNS '+ JSON.stringify(err) })
 					})
 			} else {
 				console.log('ERREUR: La base de donnée est null')
-				reject({ 'data': '', 'erreur': 'ERREUR: La base de donnée est null' })
+				resolve({"data": '', "erreur": 'ERREUR BASE IS NULL'})
 			}
 		})
 	}
@@ -183,21 +195,21 @@ export class Db {
 	}
 
 	public insertData(tableName: string, columns: string, values: string) {
-		return new Promise<string>(async (resolve, reject) => {
+		return new Promise<object>(async (resolve, reject) => {
 			if (this.db != null) {
 				// console.log('INSERT INTO (' + columns + ') VALUES ' + values)
 				this.db.executeSql('INSERT INTO ' + tableName + ' (' + columns + ') VALUES ' + values, [])
 					.then(() => {
 						console.log('Ajout de données dans la table ' + tableName)
-						resolve('ok')
+						resolve({"data":'ok', "erreur": ''})
 					})
 					.catch(err => {
 						console.log('ERREUR INSERT INTO TABLE ', JSON.stringify(err))
-						reject('err')
+						resolve({"data": '', "erreur": "Erreur lors de l'insertion des données: "+ JSON.stringify(err)})
 					})
 			} else {
 				console.log('ERREUR: La base de donnée est null')
-				reject('err')
+				reject({"data": '', "erreur": 'ERREUR BASE IS NULL'})
 			}
 		})
 	}
@@ -223,7 +235,7 @@ export class Db {
 				})
 				.catch(err => console.log('ERREUR DROP TABLE ', JSON.stringify(err)))
 		} else {
-			console.log('ERROR: La base de donnée est null')
+			console.log('ERREUR: La base de donnée est null')
 		}
 	}
 }

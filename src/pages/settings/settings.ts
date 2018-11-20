@@ -13,7 +13,7 @@ export class SettingsPage {
 
 	public colorClassName: string;
 
-	public settings: any = {
+	public settings = {
 		'language': '',
 		'color': ''
 	};
@@ -40,11 +40,12 @@ export class SettingsPage {
 			}
 		}
 
-		let settings = await this.db.getData('settings', 'language, color')
-		console.log('SETTINGS: ', JSON.stringify(settings))
-		console.log(JSON.stringify(settings.data))
-		if (settings.data != null) {
+		let set = await this.db.getData('settings', 'language, color')
+		console.log('SETTINGS: ', JSON.stringify(set))
+		if (set['data'] != null) {
 			await this.db.updateData('settings', queryUpdate, ' 1 = 1')
+		} else if (set == null) {
+			console.log('Une erreur est survenue!')
 		} else {
 			if (this.settings.language == null || this.settings.language == "") {
 				this.settings.language = 'fr'

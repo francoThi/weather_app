@@ -11,7 +11,7 @@
 	<form (ngSubmit)="settingsForm()">
 		<ion-item>
 			<ion-label>{{ 'SETTINGS_LANGAGES' | translate }}</ion-label>
-			<ion-select [(ngModel)]="settings.language" name="language">
+			<ion-select [(ngModel)]="settings.language" name="language" okText="VALIDER" cancelText="ANNULER">
 				<ion-option value="fr">{{ 'SETTINGS_LANGAGE_FR' | translate }}</ion-option>
 				<ion-option value="en">{{ 'SETTINGS_LANGAGE_EN' | translate }}</ion-option>
 			</ion-select>
@@ -19,7 +19,7 @@
 		<br>
 		<ion-item>
 			<ion-label>{{ 'SETTINGS_COLORS' | translate }}</ion-label>
-			<ion-select [(ngModel)]="settings.color" name="color">
+			<ion-select [(ngModel)]="settings.color" name="color" okText="VALIDER" cancelText="ANNULER">
 				<ion-option value="black">{{ 'SETTINGS_COLOR_BLK' | translate }}</ion-option>
 				<ion-option value="white">{{ 'SETTINGS_COLOR_WHT' | translate }}</ion-option>
 				<ion-option value="grey">{{ 'SETTINGS_COLOR_GRY' | translate }}</ion-option>

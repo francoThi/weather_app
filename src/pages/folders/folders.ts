@@ -16,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class FoldersPage {
 
+	public baseNull: boolean = false;
 	public colorClassName: string;
 	public selectedFile: string = '';
 	public listDir: Array<Entry> = [];
@@ -23,8 +24,6 @@ export class FoldersPage {
 	public listFiles: Array<string> = [];
 	public searchFile: string;
 	public showFiles: boolean = false;
-	public fileToParse: any;
-
 	public isParsing: boolean = false
 	public progressBar: number = 0
 
@@ -89,7 +88,11 @@ export class FoldersPage {
 				// Création d'un tableau de type VARCHAR par default
 				let arrayTypes = []
 				for (let n: number = 0; n < columns.length; n++) {
-					arrayTypes.push(' VARCHAR(255)')
+					if (n == 1) {
+						arrayTypes.push(' DATE')
+					} else {
+						arrayTypes.push(' VARCHAR(255)')
+					}
 				}
 				this.progressBar = 20
 				// -------------------------------------------------
@@ -108,7 +111,10 @@ export class FoldersPage {
 						if (values[n] == '' || values[n].length < 0) {
 							values[n] = 'NULL'
 						}
-						if (regFloat.test(values[n]) && arrayTypes[n + 1] == ' VARCHAR(255)') {
+						if (arrayTypes[n + 1] == ' DATE') {
+							line.push('"' + values[n] + '"')
+						}
+						else if (regFloat.test(values[n]) && arrayTypes[n + 1] == ' VARCHAR(255)') {
 							arrayTypes[n + 1] = ' FLOAT'
 							line.push(values[n])
 						} else if (regFloat.test(values[n]) && arrayTypes[n + 1] != ' VARCHAR(255)') {
@@ -128,8 +134,9 @@ export class FoldersPage {
 				let tabIsOk = true
 				arrayLines.forEach(lines => {
 					if (lines.length != columns.length) {
-						tabIsOk = false
-						console.log("ERREUR: Une ou plusieurs lignes ne correspondent pas aux nombres de colonnes attendu")
+						tabIsOk = false;
+						this.isParsing = false;
+						console.log("ERREUR: Une ou plusieurs lignes ne correspondent pas aux nombres de colonnes attendu");
 					}
 				});
 				// -------------------------------------------
@@ -141,44 +148,63 @@ export class FoldersPage {
 					let columnsInsertData: string = ''
 					for (let n: number = 0; n < columns.length; n++) {
 						if (n + 1 < columns.length) {
-							columnsAndTypes += columns[n] + arrayTypes[n] + ', '
-							columnsInsertData += columns[n] + ', '
+							columnsAndTypes += columns[n] + arrayTypes[n] + ', ';
+							columnsInsertData += columns[n] + ', ';
 						}
 						else {
-							columnsAndTypes += columns[n] + arrayTypes[n]
-							columnsInsertData += columns[n]
+							columnsAndTypes += columns[n] + arrayTypes[n];
+							columnsInsertData += columns[n];
 						}
 					}
-					this.progressBar = 31
-					await this.db.createTable("meteo", columnsAndTypes)
+					this.progressBar = 31;
+					await this.db.createTable("meteo", columnsAndTypes).then((res) => {
+						if (res['erreur'].length > 0) {
+							this.presentToast('Une erreur est survenue: ' + res['erreur']);
+							this.isParsing = false;
+						}
+					})
 					// -----------------------------------------
 
 					// On vérifie si un fichier du même nom est déjà parsé
-					this.progressBar = 49
-					let isAlreadyParse = await this.db.findDataParse('meteo', fileName)
-					console.log('DOCUMENT DEJA PARSE: ', isAlreadyParse)
+					this.progressBar = 49;
+					let isAlreadyParse: boolean = false;
+					try {
+						isAlreadyParse = await this.db.findDataParse('meteo', fileName);
+					} catch (err) {
+						isAlreadyParse = true
+						this.baseNull = true;
+					}
 					// ---------------------------------------------------
 
 					if (!isAlreadyParse) {
 						// Ajout des données en un bloc 
-						let lines: string = ''
+						let lines: string = '';
 						for (let n: number = 0; n < arrayLines.length; n++) {
 							if (n + 1 < arrayLines.length)
-								lines += '(' + arrayLines[n].toString() + '), '
+								lines += '(' + arrayLines[n].toString() + '), ';
 							else
-								lines += '(' + arrayLines[n].toString() + ') '
+								lines += '(' + arrayLines[n].toString() + ') ';
 						}
 						this.progressBar = 78
-						await this.db.insertData("meteo", columnsInsertData, lines)
-						this.presentToast('Fichier parsé avec succès')
-						this.isParsing = false
+						await this.db.insertData("meteo", columnsInsertData, lines).then((res) => {
+							if (res['erreur'].length > 0) {
+								this.presentToast('Une erreur est survenue: ' + res['erreur']);
+								this.isParsing = false;
+							} else {
+								this.presentToast('Fichier parsé avec succès');
+							}
+						})
+						this.isParsing = false;
 						// -----------------------------------------
+					} else if (this.baseNull) {
+						this.presentToast('Une erreur est survenue: BASE IS NULL');
+						this.isParsing = false;
 					} else {
-						this.presentToast('Un fichier du même nom à déjà été parsé!')
-						this.isParsing = false
-					}	
+						this.presentToast('Un fichier du même nom à déjà été parsé!');
+						this.isParsing = false;
+					}
 				} else {
-					this.isParsing = false
+					this.isParsing = false;
 				}
 			})
 		} catch (err) {
@@ -246,9 +272,9 @@ export class FoldersPage {
 			await db.createDB()
 			let settings = await db.getData('settings', 'language, color')
 			console.log('SETTINGS: ', JSON.stringify(settings))
-			if (settings.data != null) {
-				globalVars.setColorValue('color-template-' + settings.data.color);
-				translateService.use(settings.data.language)
+			if (settings['data'] != null) {
+				globalVars.setColorValue('color-template-' + settings['data'].color);
+				translateService.use(settings['data'].language)
 				this.colorClassName = await globalVars.getColorValue();
 			}
 		}, 175);

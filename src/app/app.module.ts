@@ -50,7 +50,7 @@ export function createTranslateLoader(http: HttpClient) {
         deps: [HttpClient]
       }
     }),
-    ProgressBarModule
+    ProgressBarModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [

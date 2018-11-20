@@ -17,7 +17,10 @@ import { Db } from '../../services/database.service';
 })
 export class GraphsPage {
 
+	public modeGraph: boolean = false;
+
 	public colorClassName: string;
+	public height: number;
 
 	public selectedFile: string;
 	public listFileParse: Array<string> = [];
@@ -26,9 +29,20 @@ export class GraphsPage {
 	public listColumns: Array<string> = [];
 
 	public analysed: boolean = false;
-	public analysedData: Array<any> = [];
+	public analysedData: Array<Object> = [];
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, public globalVars: GlobalVars, public db: Db) {}
+	public selectedGraph: string;
+	public listGraphs: Array<string> = ["Average by hour", "Full data graphic"]
+
+	public columnsUnit: Array<Object> = [
+		{ "name": "AIR_TEMPERATURE", "unite": '°' },
+		{ "name": "REL_HUMIDITY", "unite": '%' },
+		{ "name": "AIR_PRESSURE", "unite": ' hPa' },
+		{ "name": "LOCAL_WS_2MIN_MNM", "unite": ' nd' }
+	];
+
+
+	constructor(public navCtrl: NavController, public navParams: NavParams, public globalVars: GlobalVars, public db: Db) { }
 
 	ionViewWillEnter() {
 		if (this.colorClassName != this.globalVars.getColorValue()) {
@@ -36,6 +50,7 @@ export class GraphsPage {
 		}
 		this.db.checkIfTableExist('meteo').then(async (res) => {
 			let tableIsNotEmpty = res;
+			console.log(tableIsNotEmpty)
 			if (tableIsNotEmpty) {
 				this.db.getFilesName('meteo').then((res) => {
 					this.listFileParse = res;
@@ -54,9 +69,21 @@ export class GraphsPage {
 			this.selectedColumns.forEach(async (column) => {
 				await this.db.analyseColumn(column).then((res) => {
 					if (res && res.length > 0 && res != '') {
-						console.log(res);
-						let data = JSON.parse(res)
+						let data = JSON.parse(res);
 						let moy = data.moyenne.toFixed(2);
+						for (var i = 0; i < this.columnsUnit.length; i++) {
+							if (this.columnsUnit[i]['name'] == column) {
+								data.min = data.min + this.columnsUnit[i]['unite'];
+								moy = moy + this.columnsUnit[i]['unite'];
+								data.max = data.max + this.columnsUnit[i]['unite'];
+							}
+						}
+						if (column == 'LOCAL_WS_2MIN_MNM') {
+							let moyWD = data.moyenneWD.toFixed(2);
+							data.min = data.min + ' (' + data.minWD + '°)';
+							moy = moy + ' (' + moyWD + '°)';
+							data.max = data.max + ' (' + data.maxWD + '°)';
+						}
 						this.analysedData.push({
 							'analyse': column,
 							'min': data.min,
@@ -66,11 +93,12 @@ export class GraphsPage {
 							'dMax': data.dMax
 						})
 					} else {
-						console.log('Erreur lors du traitement de la colonne ..');
+						console.log('Erreur lors du traitement de la colonne ' + column);
 					}
 				})
 			});
 		}
+		this.height = 75 + (60 * this.selectedColumns.length)
 		this.analysed = true;
 	}
 
@@ -78,6 +106,8 @@ export class GraphsPage {
 		this.analysed = false;
 		this.selectedFile = '';
 		this.selectedColumns = [];
+		this.selectedGraph = '';
+		this.height = 0;
 	}
 
 	ionViewDidLoad() {

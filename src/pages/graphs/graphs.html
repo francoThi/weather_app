@@ -14,50 +14,69 @@
 
 
 <ion-content padding [class]="colorClassName">
+	<div *ngIf="!modeGraph">
 
-	<ion-item>
-		<ion-label>Fichier parsé</ion-label>
-		<ion-select [(ngModel)]="selectedFile" name="fileParse">
-			<ion-option *ngFor="let file of listFileParse" [value]="file">
-				<span>{{ file }}</span>
-			</ion-option>
-		</ion-select>
-	</ion-item>
+		<ion-item>
+			<ion-label>Fichier parsé</ion-label>
+			<ion-select [(ngModel)]="selectedFile" name="fileParse" okText="VALIDER" cancelText="ANNULER">
+				<ion-option *ngFor="let file of listFileParse" [value]="file">
+					<span>{{ file }}</span>
+				</ion-option>
+			</ion-select>
+		</ion-item>
 
-	<br />
-	<ion-item *ngIf="selectedFile != null && selectedFile != ''">
-		<ion-label>Données à analyser</ion-label>
-		<ion-select multiple="true" [(ngModel)]="selectedColumns" name="columns">
-			<ion-option *ngFor="let column of listColumns" [value]="column">
-				<span>{{ column }}</span>
-			</ion-option>
-		</ion-select>
-	</ion-item>
+		<br />
+		<ion-item *ngIf="selectedFile != null && selectedFile != ''">
+			<ion-label>Données à analyser</ion-label>
+			<ion-select multiple="true" [(ngModel)]="selectedColumns" name="columns" okText="VALIDER" cancelText="ANNULER">
+				<ion-option *ngFor="let column of listColumns" [value]="column">
+					<span>{{ column }}</span>
+				</ion-option>
+			</ion-select>
+		</ion-item>
 
-	<div text-center style="margin-top: 20px;">
-		<button *ngIf="selectedFile != null && selectedFile != '' && selectedColumns != null && selectedColumns != ''"
-		 ion-button (click)="analyse()">Analyser les données</button>
+		<div text-center style="margin-top: 20px;">
+			<button *ngIf="selectedFile != null && selectedFile != '' && selectedColumns != null && selectedColumns != ''"
+			 ion-button (click)="analyse()">Analyser les données</button>
 			<button *ngIf="analysed" ion-button color="danger" (click)="reinitialise()">Réinitialiser</button>
-	</div>
-
-	<ion-scroll *ngIf="analysed" scrollX="true" style="height: 100%">
-		<div style="height: 100%;min-width: 600px">
-			<div class="row header">
-				<div class="col">Analyse</div>
-				<div class="col">Minimum</div>
-				<div class="col">Date du Min</div>
-				<div class="col">Moyenne</div>
-				<div class="col">Maximum</div>
-				<div class="col">Date du Max</div>
-			</div>
-			<div class="row" *ngFor="let data of analysedData">
-				<div class="col">{{data.analyse}}</div>
-				<div class="col">{{data.min}}</div>
-				<div class="col">{{data.dMin}}</div>
-				<div class="col">{{data.moyenne}}</div>
-				<div class="col">{{data.max}}</div>
-				<div class="col">{{data.dMax}}</div>
-			</div>
 		</div>
-	</ion-scroll>
+
+		<ion-scroll [style.height.px]="height" *ngIf="analysed" scrollX="true">
+			<div [style.height.px]="height" style="min-width: 1500px">
+				<div style="height: 50px; text-align:center" class="row header">
+					<div class="col">Analyse</div>
+					<div class="col">Minimum</div>
+					<div class="col">Date du Min</div>
+					<div class="col">Moyenne</div>
+					<div class="col">Maximum</div>
+					<div class="col">Date du Max</div>
+				</div>
+				<div class="row" *ngFor="let data of analysedData">
+					<div style="text-align:center; padding-top: 30px; height:60px" class="col">{{data.analyse}}</div>
+					<div style="text-align:center; padding-top: 30px; height:60px" class="col">{{data.min}}</div>
+					<div style="text-align:center; padding-top: 30px; height:60px" class="col">{{data.dMin}}</div>
+					<div style="text-align:center; padding-top: 30px; height:60px" class="col">{{data.moyenne}}</div>
+					<div style="text-align:center; padding-top: 30px; height:60px" class="col">{{data.max}}</div>
+					<div style="text-align:center; padding-top: 30px; height:60px" class="col">{{data.dMax}}</div>
+				</div>
+			</div>
+		</ion-scroll>
+		<ion-item *ngIf="analysed">
+			<ion-label>Graphiques disponible</ion-label>
+			<ion-select [(ngModel)]="selectedGraph" name="graphs" okText="VALIDER" cancelText="ANNULER">
+				<ion-option *ngFor="let graph of listGraphs" [value]="graph">
+					<span>{{ graph }}</span>
+				</ion-option>
+			</ion-select>
+		</ion-item>
+		<div *ngIf="analysed && (selectedGraph != null && selectedGraph != '')" text-center style="margin-top: 20px;">
+			<button ion-button>Afficher le graphique</button>
+		</div>
+		<br />
+	</div>
+	<div *ngIf="modeGraph">
+		<div text-center style="margin-top: 20px;">
+			<button ion-button>Afficher le tableau</button>
+		</div>
+	</div>
 </ion-content>
