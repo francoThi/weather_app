@@ -69,14 +69,25 @@
 				</ion-option>
 			</ion-select>
 		</ion-item>
-		<div *ngIf="analysed && (selectedGraph != null && selectedGraph != '')" text-center style="margin-top: 20px;">
-			<button ion-button>Afficher le graphique</button>
+		<ion-item *ngIf="analysed">
+			<ion-label>Données pour le graph</ion-label>
+			<ion-select [(ngModel)]="selectedColumnsGraph" name="columnsGraphs" okText="VALIDER" cancelText="ANNULER">
+				<ion-option *ngFor="let graphs of listColumnsGraph" [value]="graphs">
+					<span>{{ graphs }}</span>
+				</ion-option>
+			</ion-select>
+		</ion-item>
+		<div *ngIf="analysed && (selectedGraph != null && selectedGraph != '') && (selectedColumnsGraph != null && selectedColumnsGraph != '')"
+		 text-center style="margin-top: 20px;">
+			<button ion-button (click)="getGraphs()">Afficher le graphique</button>
 		</div>
 		<br />
 	</div>
 	<div *ngIf="modeGraph">
 		<div text-center style="margin-top: 20px;">
-			<button ion-button>Afficher le tableau</button>
+			<button ion-button (click)="getGraphs()">Afficher le tableau</button>
+			<!-- <div [chart]="stock"></div> -->
+			<!-- <div id="container"></div> -->
 		</div>
 	</div>
 </ion-content>

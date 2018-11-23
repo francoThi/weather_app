@@ -18,7 +18,7 @@ export class Db {
 					console.log('Création/Ouverture de la base avec succès')
 					this.db = db
 					await this.createTable('settings', 'language VARCHAR(255), color VARCHAR(255)')
-					await this.dropTable('meteo')
+					// await this.dropTable('meteo')
 					resolve({"data": 'ok', "erreur": ''})
 				})
 			} catch (err) {

@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { GlobalVars } from '../../services/settings.service'
+import { GlobalVars } from '../../services/settings.service';
 import { Db } from '../../services/database.service';
-
 /**
  * Generated class for the GraphsPage page.
  *
@@ -32,7 +31,9 @@ export class GraphsPage {
 	public analysedData: Array<Object> = [];
 
 	public selectedGraph: string;
+	public selectedColumnsGraph: string = '';
 	public listGraphs: Array<string> = ["Average by hour", "Full data graphic"]
+	public listColumnsGraph: Array<string> = ["AIR_TEMPERATURE", "REL_HUMIDITY", "AIR_PRESSURE", "LOCAL_WS_2MIN_MNM"];
 
 	public columnsUnit: Array<Object> = [
 		{ "name": "AIR_TEMPERATURE", "unite": '°' },
@@ -61,6 +62,14 @@ export class GraphsPage {
 			}
 
 		})
+	}
+
+	public getGraphs() {
+		if (this.modeGraph == false) {
+			this.modeGraph = true;
+		} else {
+			this.modeGraph = false;
+		}
 	}
 
 	public analyse() {
@@ -107,6 +116,7 @@ export class GraphsPage {
 		this.selectedFile = '';
 		this.selectedColumns = [];
 		this.selectedGraph = '';
+		this.selectedColumnsGraph = '';
 		this.height = 0;
 	}
 
